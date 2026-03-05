@@ -1,4 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -21,8 +23,8 @@ function App() {
               <p className="text-lg text-gray-600">The central blood bank management system.</p>
             </div>
           } />
-          <Route path="/login" element={<div className="text-center mt-10 text-2xl">Login Page Component Placeholder</div>} />
-          <Route path="/register" element={<div className="text-center mt-10 text-2xl">Register Page Component Placeholder</div>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </main>
     </div>

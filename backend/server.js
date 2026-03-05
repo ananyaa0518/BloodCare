@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -24,7 +25,8 @@ app.use(express.json());
 initDB();
 
 // Routes
-// app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+// app.use('/api/blood', bloodRoutes);
 // app.use('/api/blood', bloodRoutes);
 // app.use('/api/requests', requestRoutes);
 
