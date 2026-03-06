@@ -14,7 +14,7 @@ const generateToken = (id) => {
 // @access  Public
 export const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role, blood_type, age, last_donation_date } = req.body;
+        const { name, email, password, role, blood_type, age, phone, city, last_donation_date } = req.body;
 
         if (!name || !email || !password || !role) {
             return res.status(400).json({ message: 'Please add all required fields' });
@@ -32,9 +32,9 @@ export const registerUser = async (req, res) => {
 
         // Create user
         const newUser = await pool.query(
-            `INSERT INTO users (name, email, password, role, blood_type, age, last_donation_date) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, email, role, blood_type, age, last_donation_date, created_at`,
-            [name, email, hashedPassword, role, blood_type, age, last_donation_date]
+            `INSERT INTO users (name, email, password, role, blood_type, age, phone, city, last_donation_date) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, name, email, role, blood_type, age, phone, city, last_donation_date, created_at`,
+            [name, email, hashedPassword, role, blood_type, age, phone, city, last_donation_date]
         );
 
         if (newUser.rows[0]) {

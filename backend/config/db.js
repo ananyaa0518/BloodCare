@@ -27,13 +27,35 @@ const initDB = async () => {
       role VARCHAR(50) NOT NULL CHECK (role IN ('Admin', 'Blood Bank Staff', 'Hospital Staff', 'Donor')),
       blood_type VARCHAR(10),
       age INT,
+      phone VARCHAR(20),
+      city VARCHAR(100),
       last_donation_date DATE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
     try {
         await pool.query(queryText);
+
+        // Non-destructively add columns if they don't exist yet
+        await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20)');
+        await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS city VARCHAR(100)');
+
         console.log('Users table initialized successfully');
+
+        const historyQueryText = `
+        CREATE TABLE IF NOT EXISTS donation_history (
+          id SERIAL PRIMARY KEY,
+          donor_id INT REFERENCES users(id) ON DELETE CASCADE,
+          donation_date DATE NOT NULL,
+          location VARCHAR(150),
+          units INT NOT NULL,
+          status VARCHAR(50) DEFAULT 'Completed',
+          notes TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        `;
+        await pool.query(historyQueryText);
+        console.log('Donation History table initialized successfully');
     } catch (err) {
         console.error('Error initializing database:', err);
     }

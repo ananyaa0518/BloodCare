@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DonorRegistration from './pages/DonorRegistration';
 import DonorsList from './pages/DonorsList';
+import DonorDashboard from './pages/DonorDashboard';
 
 function App() {
   return (
@@ -10,9 +11,10 @@ function App() {
       <nav className="bg-red-600 text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold tracking-tight">BloodCare</Link>
-          <div className="space-x-4">
+          <div className="space-x-4 flex items-center">
             <Link to="/donors" className="hover:text-red-200 transition">Donors</Link>
             <Link to="/donor-registration" className="hover:text-red-200 transition">Register as Donor</Link>
+            <Link to="/dashboard" className="hover:text-red-200 transition font-semibold text-yellow-200">Dashboard</Link>
             <Link to="/login" className="hover:text-red-200 transition">Login</Link>
             <Link to="/register" className="hover:text-red-200 transition">Register</Link>
           </div>
@@ -31,6 +33,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/donor-registration" element={<DonorRegistration />} />
           <Route path="/donors" element={<DonorsList />} />
+          <Route path="/dashboard" element={<DonorDashboard />} />
         </Routes>
       </main>
     </div>
