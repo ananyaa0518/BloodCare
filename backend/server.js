@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
 import donorRoutes from './routes/donorRoutes.js';
+import inventoryRoutes from './routes/inventoryRoutes.js';
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ initDB();
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/donors', donorRoutes);
-// app.use('/api/blood', bloodRoutes);
+app.use('/api/inventory', inventoryRoutes);
 // app.use('/api/blood', bloodRoutes);
 // app.use('/api/requests', requestRoutes);
 

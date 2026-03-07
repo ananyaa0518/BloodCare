@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import DonorRegistration from './pages/DonorRegistration';
 import DonorsList from './pages/DonorsList';
 import DonorDashboard from './pages/DonorDashboard';
+import InventoryDashboard from './pages/InventoryDashboard';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <div className="space-x-4 flex items-center">
             <Link to="/donors" className="hover:text-red-200 transition">Donors</Link>
             <Link to="/donor-registration" className="hover:text-red-200 transition">Register as Donor</Link>
+            <Link to="/inventory" className="hover:text-red-200 transition font-semibold text-red-100">Inventory</Link>
             <Link to="/dashboard" className="hover:text-red-200 transition font-semibold text-yellow-200">Dashboard</Link>
             <Link to="/login" className="hover:text-red-200 transition">Login</Link>
             <Link to="/register" className="hover:text-red-200 transition">Register</Link>
@@ -34,6 +36,7 @@ function App() {
           <Route path="/donor-registration" element={<DonorRegistration />} />
           <Route path="/donors" element={<DonorsList />} />
           <Route path="/dashboard" element={<DonorDashboard />} />
+          <Route path="/inventory" element={<InventoryDashboard />} />
         </Routes>
       </main>
     </div>
