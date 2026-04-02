@@ -5,30 +5,34 @@ import DonorRegistration from './pages/DonorRegistration';
 import DonorsList from './pages/DonorsList';
 import DonorDashboard from './pages/DonorDashboard';
 import InventoryDashboard from './pages/InventoryDashboard';
+import EmergencyRequestForm from './pages/EmergencyRequestForm';
+import RequestsList from './pages/RequestsList';
+import AdminDashboard from './pages/AdminDashboard';
+import UserManagement from './pages/UserManagement';
+import Navbar from './components/Navbar';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
-      <nav className="bg-red-600 text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold tracking-tight">BloodCare</Link>
-          <div className="space-x-4 flex items-center">
-            <Link to="/donors" className="hover:text-red-200 transition">Donors</Link>
-            <Link to="/donor-registration" className="hover:text-red-200 transition">Register as Donor</Link>
-            <Link to="/inventory" className="hover:text-red-200 transition font-semibold text-red-100">Inventory</Link>
-            <Link to="/dashboard" className="hover:text-red-200 transition font-semibold text-yellow-200">Dashboard</Link>
-            <Link to="/login" className="hover:text-red-200 transition">Login</Link>
-            <Link to="/register" className="hover:text-red-200 transition">Register</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-100 to-rose-50 flex flex-col font-sans text-gray-900 transition-colors duration-500">
+      <Toaster position="top-right" />
+      <Navbar />
 
-      <main className="container mx-auto p-4 mt-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow my-10 relative z-10 w-full max-w-7xl">
         <Routes>
           <Route path="/" element={
-            <div className="text-center">
-              <h1 className="text-4xl font-extrabold text-red-600 mb-4">Welcome to BloodCare</h1>
-              <p className="text-lg text-gray-600">The central blood bank management system.</p>
+            <div className="text-center flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in duration-700">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-red-100 text-red-700 font-bold text-sm tracking-widest mb-6 uppercase shadow-sm">Saving Lives Together</span>
+              <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight drop-shadow-sm">
+                Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-400">BloodCare</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-600 max-w-2xl font-medium leading-relaxed">
+                The centralized, modern blood bank management system that connects donors, hospitals, and staff.
+              </p>
+              <div className="mt-10 flex gap-4">
+                <Link to="/register" className="btn-primary text-lg px-8 py-6 rounded-full shadow-xl shadow-red-500/20">Get Started Now</Link>
+                <Link to="/donors" className="btn-secondary text-lg px-8 py-6 rounded-full">Find Donors</Link>
+              </div>
             </div>
           } />
           <Route path="/login" element={<Login />} />
@@ -37,6 +41,10 @@ function App() {
           <Route path="/donors" element={<DonorsList />} />
           <Route path="/dashboard" element={<DonorDashboard />} />
           <Route path="/inventory" element={<InventoryDashboard />} />
+          <Route path="/requests" element={<RequestsList />} />
+          <Route path="/emergency-request" element={<EmergencyRequestForm />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
         </Routes>
       </main>
     </div>

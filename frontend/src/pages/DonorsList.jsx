@@ -18,7 +18,7 @@ const DonorsList = () => {
             if (filters.blood_type) params.append('blood_type', filters.blood_type);
             if (filters.city) params.append('city', filters.city);
 
-            const response = await fetch(`http://localhost:5000/api/donors?${params.toString()}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/donors?${params.toString()}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch donors');
@@ -45,18 +45,28 @@ const DonorsList = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h2 className="text-3xl font-bold mb-6 text-red-600">Blood Donors</h2>
+        <div className="max-w-7xl mx-auto py-8 animate-in fade-in duration-700">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <h2 className="text-4xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                        <span className="flex items-center justify-center w-12 h-12 bg-red-100 text-red-600 rounded-2xl shadow-inner">
+                            🩸
+                        </span>
+                        Blood Donors Directory
+                    </h2>
+                    <p className="mt-2 text-slate-500 font-medium">Search and find available blood donors in your area.</p>
+                </div>
+            </div>
 
             {/* Search Filters */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border mb-6 flex flex-col md:flex-row gap-4 items-center">
+            <div className="glass p-6 rounded-3xl border border-white shadow-xl shadow-slate-200/40 mb-8 flex flex-col md:flex-row gap-5 items-end">
                 <div className="w-full md:w-1/3">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Blood Type</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Blood Type</label>
                     <select
                         name="blood_type"
                         value={filters.blood_type}
                         onChange={handleFilterChange}
-                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="input-field bg-white shadow-sm"
                     >
                         <option value="">All Types</option>
                         <option value="A+">A+</option>
@@ -71,51 +81,63 @@ const DonorsList = () => {
                 </div>
 
                 <div className="w-full md:w-1/3">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">City</label>
                     <input
                         type="text"
                         name="city"
                         placeholder="Search by city..."
                         value={filters.city}
                         onChange={handleFilterChange}
-                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="input-field bg-white shadow-sm"
                     />
                 </div>
             </div>
 
             {/* Donors List */}
-            {error && <div className="text-red-500 bg-red-50 p-3 rounded mb-4">{error}</div>}
+            {error && <div className="bg-red-50/90 text-red-700 p-4 rounded-xl border border-red-200 mb-6 font-semibold shadow-sm">{error}</div>}
 
             {loading ? (
-                <div className="text-center py-10">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading donors...</p>
+                <div className="text-center py-20">
+                    <div className="animate-spin rounded-full h-14 w-14 border-4 border-slate-200 border-t-red-600 mx-auto shadow-sm"></div>
+                    <p className="mt-4 text-slate-500 font-bold tracking-wide">Loading donor database...</p>
                 </div>
             ) : donors.length === 0 ? (
-                <div className="text-center py-10 bg-gray-50 rounded-lg">
-                    <p className="text-xl text-gray-500">No donors found matching your criteria.</p>
+                <div className="text-center py-16 bg-slate-50/50 rounded-3xl border border-dashed border-slate-300">
+                    <span className="text-5xl mb-4 block opacity-50">🔍</span>
+                    <p className="text-xl font-bold text-slate-600">No donors found matching your criteria.</p>
+                    <p className="text-slate-400 mt-2">Try adjusting your filters to find more results.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {donors.map(donor => (
-                        <div key={donor.id} className="bg-white p-6 rounded-lg shadow-md border-t-4 border-red-500 hover:shadow-lg transition">
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="text-xl font-bold text-gray-800">{donor.name}</h3>
-                                <span className="bg-red-100 text-red-800 text-lg font-bold px-3 py-1 rounded-full">
+                        <div key={donor.id} className="glass p-8 rounded-3xl border border-white hover:border-red-200 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                            <div className="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">
+                                <h3 className="text-2xl font-black text-slate-800 tracking-tight">{donor.name}</h3>
+                                <span className="bg-gradient-to-br from-red-500 to-rose-600 shadow-md shadow-red-500/20 text-white text-lg font-black px-4 py-1.5 rounded-xl tracking-widest">
                                     {donor.blood_type}
                                 </span>
                             </div>
-                            <div className="space-y-2 text-gray-600">
-                                <p><span className="font-semibold">Age:</span> {donor.age}</p>
-                                <p><span className="font-semibold">City:</span> {donor.city}</p>
-                                <p><span className="font-semibold">Phone:</span> {donor.phone}</p>
-                                {donor.last_donation_date && (
-                                    <p><span className="font-semibold">Last Donated:</span> {new Date(donor.last_donation_date).toLocaleDateString()}</p>
-                                )}
+                            <div className="space-y-3 mb-8">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-bold uppercase tracking-wider text-slate-400">Age:</span>
+                                    <span className="font-semibold text-slate-700">{donor.age} years</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-bold uppercase tracking-wider text-slate-400">City:</span>
+                                    <span className="font-semibold text-slate-700">{donor.city || 'Not specified'}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-bold uppercase tracking-wider text-slate-400">Phone:</span>
+                                    <span className="font-semibold text-slate-700">{donor.phone || 'N/A'}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="font-bold uppercase tracking-wider text-slate-400">Last Donated:</span>
+                                    <span className="font-semibold text-slate-700">{donor.last_donation_date ? new Date(donor.last_donation_date).toLocaleDateString() : 'Never'}</span>
+                                </div>
                             </div>
                             <button
                                 onClick={() => alert(`Contacting ${donor.name} at ${donor.phone}...`)}
-                                className="mt-6 w-full bg-red-50 text-red-600 font-semibold py-2 rounded hover:bg-red-100 transition"
+                                className="w-full bg-red-50 text-red-600 font-bold py-3.5 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100"
                             >
                                 Contact Donor
                             </button>
