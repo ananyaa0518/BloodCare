@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bell } from 'lucide-react';
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
+import { API_URL } from '../config';
 
 function NotificationBell({ user }) {
     const [notifications, setNotifications] = useState([]);
@@ -13,7 +14,7 @@ function NotificationBell({ user }) {
         if (!user || user.role !== 'Donor') return;
 
         // Initialize Socket
-        const newSocket = io(import.meta.env.VITE_API_URL);
+        const newSocket = io(API_URL);
         setSocket(newSocket);
 
         newSocket.on('connect', () => {
@@ -45,7 +46,7 @@ function NotificationBell({ user }) {
     const handleRespond = async (requestId) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/requests/${requestId}/respond`, {
+            const res = await fetch(`${API_URL}/api/requests/${requestId}/respond`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

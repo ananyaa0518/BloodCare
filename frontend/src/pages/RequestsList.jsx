@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API_URL } from '../config';
 
 function RequestsList() {
     const [requests, setRequests] = useState([]);
@@ -24,7 +25,7 @@ function RequestsList() {
     const fetchRequests = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/requests`);
+            const response = await fetch(`${API_URL}/api/requests`);
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.message || 'Failed to fetch requests');
@@ -48,7 +49,7 @@ function RequestsList() {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/requests/${id}/status`, {
+            const response = await fetch(`${API_URL}/api/requests/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

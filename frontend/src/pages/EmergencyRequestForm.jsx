@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 function EmergencyRequestForm() {
     const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ function EmergencyRequestForm() {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/requests`, {
+            const response = await fetch(`${API_URL}/api/requests`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

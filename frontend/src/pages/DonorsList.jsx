@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
 
 const DonorsList = () => {
     const [donors, setDonors] = useState([]);
@@ -18,7 +19,7 @@ const DonorsList = () => {
             if (filters.blood_type) params.append('blood_type', filters.blood_type);
             if (filters.city) params.append('city', filters.city);
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/donors?${params.toString()}`);
+            const response = await fetch(`${API_URL}/api/donors?${params.toString()}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch donors');

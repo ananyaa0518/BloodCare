@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const DonorDashboard = () => {
     const [profile, setProfile] = useState(null);
@@ -32,7 +33,7 @@ const DonorDashboard = () => {
         setLoading(true);
         try {
             // Fetch Profile
-            const profileRes = await fetch(`${import.meta.env.VITE_API_URL}/api/donors/${user.id}`, {
+            const profileRes = await fetch(`${API_URL}/api/donors/${user.id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!profileRes.ok) throw new Error('Failed to fetch profile');
@@ -40,7 +41,7 @@ const DonorDashboard = () => {
             setProfile(profileData);
 
             // Fetch History
-            const historyRes = await fetch(`${import.meta.env.VITE_API_URL}/api/donors/${user.id}/history`, {
+            const historyRes = await fetch(`${API_URL}/api/donors/${user.id}/history`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!historyRes.ok) throw new Error('Failed to fetch donation history');
@@ -57,7 +58,7 @@ const DonorDashboard = () => {
     const handleDonationSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donors/${user.id}/history`, {
+            const res = await fetch(`${API_URL}/api/donors/${user.id}/history`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
