@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { API_URL } from '../config';
 
 const AddStockModal = ({ isOpen, onClose, onAdd }) => {
     const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AddStockModal = ({ isOpen, onClose, onAdd }) => {
         setError('');
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/inventory`, {
+            const response = await fetch(`${API_URL}/api/inventory`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

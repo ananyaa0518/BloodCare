@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API_URL } from '../config';
 
 function AdminDashboard() {
     const [stats, setStats] = useState(null);
@@ -17,7 +18,7 @@ function AdminDashboard() {
             }
 
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/stats`, {
+                const res = await fetch(`${API_URL}/api/admin/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

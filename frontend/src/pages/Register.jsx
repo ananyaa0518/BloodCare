@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HeartPulse, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { API_URL } from '../config';
 
 const ROLES = ['Admin', 'Blood Bank Staff', 'Hospital Staff', 'Donor'];
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
@@ -60,7 +61,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+            const res = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

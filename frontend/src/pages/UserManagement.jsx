@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API_URL } from '../config';
 
 function UserManagement() {
     const [users, setUsers] = useState([]);
@@ -13,7 +14,7 @@ function UserManagement() {
     const fetchUsers = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
+            const res = await fetch(`${API_URL}/api/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -32,7 +33,7 @@ function UserManagement() {
 
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/status`, {
+            const res = await fetch(`${API_URL}/api/admin/users/${userId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

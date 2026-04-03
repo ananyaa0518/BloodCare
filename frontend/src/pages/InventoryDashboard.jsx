@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, AlertTriangle, Activity, Droplet } from 'lucide-react';
 import AddStockModal from '../components/AddStockModal';
+import { API_URL } from '../config';
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 const CRITICAL_THRESHOLD = 5;
@@ -18,7 +19,7 @@ const InventoryDashboard = () => {
 
     const fetchInventory = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/inventory`);
+            const res = await fetch(`${API_URL}/api/inventory`);
             if (!res.ok) throw new Error('Failed to fetch inventory');
             const data = await res.json();
             setInventory(data);
@@ -35,7 +36,7 @@ const InventoryDashboard = () => {
 
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/inventory/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/api/inventory/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Failed to delete stock');
             setInventory(prev => prev.filter(item => item.id !== id));
         } catch (err) {
