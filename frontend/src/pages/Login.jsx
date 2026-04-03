@@ -51,14 +51,9 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-100px)] py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full relative z-10">
-                {/* Decorative blobs */}
-                <div className="absolute top-0 -left-4 w-72 h-72 bg-rose-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-                <div className="absolute top-0 -right-4 w-72 h-72 bg-red-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-
-                <div className="relative glass p-10 rounded-2xl shadow-2xl border border-white/40">
+        <div className="page-wrap">
+            <div className="max-w-md mx-auto">
+                <div className="content-card">
                     <div className="text-center">
                         <div className="mx-auto h-16 w-16 bg-red-100 flex items-center justify-center rounded-2xl mb-6 shadow-inner transform rotate-3">
                             <HeartPulse className="h-8 w-8 text-red-600 transform -rotate-3" />
@@ -81,7 +76,7 @@ const Login = () => {
                     )}
 
                     <form className="mt-8 space-y-6" onSubmit={onSubmit}>
-                        <div className="space-y-5">
+                        <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5" htmlFor="email">
                                     Email address
@@ -115,7 +110,7 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-1">
                             <button
                                 type="submit"
                                 className="w-full btn-primary h-12 text-base rounded-xl shadow-lg shadow-red-500/30"

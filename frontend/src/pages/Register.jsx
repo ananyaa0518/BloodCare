@@ -94,14 +94,9 @@ const Register = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-100px)] py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl w-full relative z-10">
-                {/* Decorative blobs */}
-                <div className="absolute top-0 -left-6 w-80 h-80 bg-rose-400 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob"></div>
-                <div className="absolute top-0 -right-4 w-80 h-80 bg-orange-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-10 left-32 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
-
-                <div className="relative glass p-10 sm:p-12 rounded-2xl shadow-2xl border border-white/40">
+        <div className="page-wrap">
+            <div className="max-w-3xl mx-auto">
+                <div className="content-card">
                     <div className="text-center">
                         <div className="mx-auto h-16 w-16 bg-gradient-to-br from-red-100 to-rose-100 flex items-center justify-center rounded-2xl mb-6 shadow-inner transform rotate-3">
                             <UserPlus className="h-8 w-8 text-rose-600 transform -rotate-3" />
@@ -141,7 +136,7 @@ const Register = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-slate-700 mb-1.5" htmlFor="name">
                                     Full Name
@@ -204,13 +199,13 @@ const Register = () => {
 
                         {/* Conditional Donor Fields */}
                         {role === 'Donor' && (
-                            <div className="p-5 bg-rose-50/60 rounded-xl border border-rose-100/50 space-y-5 mt-4 transition-all duration-300">
+                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4 mt-2">
                                 <h3 className="text-sm font-bold text-rose-800 flex items-center tracking-wide uppercase">
                                     <HeartPulse className="w-5 h-5 mr-2 text-rose-600" />
                                     Donor Information
                                 </h3>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-semibold text-rose-900 mb-1.5" htmlFor="blood_type">
                                             Blood Type

@@ -42,8 +42,8 @@ function AdminDashboard() {
     if (!stats) return null;
 
     return (
-        <div className="max-w-7xl mx-auto py-8 animate-in fade-in duration-700 space-y-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/50 backdrop-blur-md p-6 rounded-3xl border border-white/60 shadow-sm">
+        <div className="page-wrap space-y-6">
+            <div className="content-card flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
                         <span className="flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-600 rounded-xl shadow-inner">
@@ -57,7 +57,7 @@ function AdminDashboard() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="glass p-8 rounded-3xl border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-400 opacity-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3"></div>
                     <h3 className="text-slate-400 font-black tracking-widest text-xs uppercase mb-3 flex items-center gap-2">
@@ -83,7 +83,7 @@ function AdminDashboard() {
                 </div>
             </div>
 
-            <div className="glass rounded-3xl shadow-xl shadow-slate-200/40 border border-white mt-8 overflow-hidden">
+            <div className="content-card p-0 overflow-hidden">
                 <div className="p-8 border-b border-white/50 bg-white/40">
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Recent Activity</h2>
                 </div>

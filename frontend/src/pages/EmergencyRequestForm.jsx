@@ -73,13 +73,13 @@ function EmergencyRequestForm() {
     };
 
     return (
-        <div className="flex items-center justify-center py-6 px-4 sm:px-6">
-            <div className="max-w-2xl w-full relative z-10">
+        <div className="page-wrap">
+            <div className="max-w-3xl mx-auto w-full relative z-10">
                 {/* Decorative emergency blobs */}
                 <div className="absolute -top-10 -left-10 w-72 h-72 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
                 <div className="absolute -bottom-10 -right-10 w-72 h-72 bg-rose-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
 
-                <div className="relative glass p-10 sm:p-12 rounded-3xl shadow-2xl border border-red-100 backdrop-blur-xl">
+                <div className="content-card">
                     <div className="text-center mb-8">
                         <span className="inline-flex items-center justify-center p-3 bg-red-100 text-red-600 rounded-2xl mb-4 shadow-sm animate-bounce">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
