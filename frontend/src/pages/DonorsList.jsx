@@ -46,7 +46,7 @@ const DonorsList = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto py-8 animate-in fade-in duration-700">
+        <div className="page-wrap space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
                     <h2 className="text-4xl font-black text-slate-800 tracking-tight flex items-center gap-3">
@@ -60,7 +60,7 @@ const DonorsList = () => {
             </div>
 
             {/* Search Filters */}
-            <div className="glass p-6 rounded-3xl border border-white shadow-xl shadow-slate-200/40 mb-8 flex flex-col md:flex-row gap-5 items-end">
+            <div className="content-card mb-0 flex flex-col md:flex-row gap-4 items-end">
                 <div className="w-full md:w-1/3">
                     <label className="block text-sm font-bold text-slate-700 mb-2">Blood Type</label>
                     <select
@@ -109,7 +109,7 @@ const DonorsList = () => {
                     <p className="text-slate-400 mt-2">Try adjusting your filters to find more results.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {donors.map(donor => (
                         <div key={donor.id} className="glass p-8 rounded-3xl border border-white hover:border-red-200 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
                             <div className="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">

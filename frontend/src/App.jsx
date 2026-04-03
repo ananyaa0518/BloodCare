@@ -14,24 +14,23 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-100 to-rose-50 flex flex-col font-sans text-gray-900 transition-colors duration-500">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
       <Toaster position="top-right" />
       <Navbar />
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow my-10 relative z-10 w-full max-w-7xl">
+      <main className="flex-grow py-6 sm:py-8">
         <Routes>
           <Route path="/" element={
-            <div className="text-center flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in duration-700">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-red-100 text-red-700 font-bold text-sm tracking-widest mb-6 uppercase shadow-sm">Saving Lives Together</span>
-              <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tight drop-shadow-sm">
-                Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-400">BloodCare</span>
-              </h1>
-              <p className="text-xl md:text-2xl text-slate-600 max-w-2xl font-medium leading-relaxed">
-                The centralized, modern blood bank management system that connects donors, hospitals, and staff.
-              </p>
-              <div className="mt-10 flex gap-4">
-                <Link to="/register" className="btn-primary text-lg px-8 py-6 rounded-full shadow-xl shadow-red-500/20">Get Started Now</Link>
-                <Link to="/donors" className="btn-secondary text-lg px-8 py-6 rounded-full">Find Donors</Link>
+            <div className="page-wrap">
+              <div className="content-card text-center space-y-6">
+                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Welcome to BloodCare</h1>
+                <p className="text-slate-600 max-w-2xl mx-auto">
+                  A simple blood bank management platform for donors, hospitals, and administrators.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 pt-2">
+                  <Link to="/register" className="btn-primary">Create Account</Link>
+                  <Link to="/donors" className="btn-secondary">Browse Donors</Link>
+                </div>
               </div>
             </div>
           } />

@@ -57,8 +57,8 @@ function UserManagement() {
     if (loading) return <LoadingSpinner message="Loading Users..." size="lg" />;
 
     return (
-        <div className="max-w-7xl mx-auto py-8 animate-in fade-in duration-700">
-            <div className="glass p-8 rounded-3xl border border-white shadow-xl shadow-slate-200/40">
+        <div className="page-wrap">
+            <div className="content-card">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <h2 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
                         <span className="flex items-center justify-center w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl shadow-inner">

@@ -101,9 +101,9 @@ const InventoryDashboard = () => {
     );
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in zoom-in duration-700 pb-12">
+        <div className="page-wrap space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 glass p-8 rounded-3xl border border-red-50/50 shadow-xl shadow-red-500/5 relative overflow-hidden">
+            <div className="content-card flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-red-400 opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                 <div className="relative z-10">
                     <h1 className="text-4xl font-black text-slate-900 flex items-center gap-3 tracking-tight">
@@ -124,7 +124,7 @@ const InventoryDashboard = () => {
             </div>
 
             {/* Aggregated Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {aggregatedData.map(data => (
                     <div key={data.type} className="glass p-6 rounded-3xl border border-white hover:border-red-200 transition-all duration-300 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-white/40 rounded-full blur-xl translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
@@ -141,7 +141,7 @@ const InventoryDashboard = () => {
 
             {/* Expiring / Critical Units Section */}
             {expiringItems.length > 0 && (
-                <div className="glass rounded-3xl border border-red-200 overflow-hidden shadow-2xl shadow-red-900/5">
+                <div className="content-card p-0 overflow-hidden">
                     <div className="bg-gradient-to-r from-red-50 to-red-100/50 px-8 py-5 flex items-center gap-3 border-b border-red-100">
                         <div className="p-2 bg-red-200/50 rounded-xl">
                             <AlertTriangle className="text-red-600" size={24} />

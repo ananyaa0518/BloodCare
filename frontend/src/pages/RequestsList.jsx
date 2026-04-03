@@ -87,8 +87,8 @@ function RequestsList() {
     if (error) return <div className="text-center py-10 text-red-600 bg-red-50 rounded-lg">{error}</div>;
 
     return (
-        <div className="max-w-7xl mx-auto py-8 animate-in fade-in duration-700">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 glass p-8 rounded-3xl border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden">
+        <div className="page-wrap space-y-6">
+            <div className="content-card flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-0 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-red-400 opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
 
                 <div className="relative z-10">
@@ -115,7 +115,7 @@ function RequestsList() {
                     <p className="text-slate-500 font-medium">No active emergency requests at the moment.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {requests.map(request => {
                         const isFulfilled = request.status === 'Fulfilled';
                         const cardStyles = isFulfilled

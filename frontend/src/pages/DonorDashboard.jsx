@@ -83,8 +83,8 @@ const DonorDashboard = () => {
     if (error) return <div className="text-red-500 text-center py-10">{error}</div>;
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-700 py-8 px-4 sm:px-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/50 backdrop-blur-md p-6 rounded-3xl border border-white/60 shadow-sm">
+        <div className="page-wrap space-y-6">
+            <div className="content-card flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 className="text-3xl font-black tracking-tight text-slate-800">
                     Welcome back, <span className="text-red-600 drop-shadow-sm">{profile?.name}</span>
                 </h1>
@@ -100,7 +100,7 @@ const DonorDashboard = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Profile Card */}
                 <div className="lg:col-span-1 glass p-8 rounded-3xl border border-white shadow-xl shadow-slate-200/40 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-red-400 opacity-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3"></div>

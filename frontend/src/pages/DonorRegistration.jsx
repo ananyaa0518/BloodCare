@@ -79,10 +79,8 @@ const DonorRegistration = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="glass p-8 sm:p-10 rounded-3xl border border-white shadow-2xl shadow-red-500/10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-red-400 opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-400 opacity-5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+        <div className="page-wrap">
+            <div className="max-w-3xl mx-auto content-card">
 
                 <div className="relative z-10 text-center mb-10">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 text-red-600 rounded-2xl mb-4 shadow-inner">
@@ -95,7 +93,7 @@ const DonorRegistration = () => {
                 {error && <div className="bg-red-50 text-red-600 border border-red-100 p-4 rounded-xl mb-6 font-bold text-sm text-center shadow-sm relative z-10">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="sm:col-span-2">
                             <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-2">Full Name</label>
                             <input type="text" name="name" required value={formData.name} onChange={handleChange} className="input-field bg-white/60 focus:bg-white" placeholder="John Doe" />
@@ -152,7 +150,7 @@ const DonorRegistration = () => {
                         <input type="date" name="last_donation_date" value={formData.last_donation_date} onChange={handleChange} className="input-field bg-white/60 focus:bg-white" />
                     </div>
 
-                    <button type="submit" disabled={loading} className="w-full btn-primary py-4 text-lg font-black uppercase tracking-widest mt-8 flex justify-center items-center gap-2">
+                    <button type="submit" disabled={loading} className="w-full btn-primary py-3 text-base font-semibold mt-4 flex justify-center items-center gap-2">
                         {loading ? (
                             <>
                                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
