@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import NotificationBell from './NotificationBell';
 
 function Navbar() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -13,17 +14,18 @@ function Navbar() {
                 setUser(JSON.parse(storedUser));
             } catch (e) {
                 console.error("Failed parsing user", e);
+                setUser(null);
             }
+        } else {
+            setUser(null);
         }
-    }, []);
+    }, [location.pathname]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
-        navigate('/');
-        // Optionally refresh page to force clear state
-        window.location.reload();
+        navigate('/login', { replace: true });
     };
 
     return (
@@ -56,27 +58,18 @@ function Navbar() {
                         <Link to="/donors" className="text-gray-600 hover:text-primary transition">Donors Directory</Link>
                     )}
 
-                    {/* Auth & Notifications */}
-                    {!user ? (
-                        <div className="flex items-center gap-3 ml-2 sm:ml-4 border-l border-gray-200 pl-3 sm:pl-4">
-                            <Link to="/login" className="text-gray-700 hover:text-primary transition-colors font-semibold">Log in</Link>
-                            <Link to="/register" className="btn-primary">Register</Link>
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-3 ml-2 sm:ml-4 border-l border-gray-200 pl-3 sm:pl-4">
-                            <span className="text-sm text-gray-500">Hello, <span className="font-semibold text-gray-900">{user.name}</span></span>
+                    <div className="flex items-center gap-3 ml-2 sm:ml-4 border-l border-gray-200 pl-3 sm:pl-4">
+                        <span className="text-sm text-gray-500">Hello, <span className="font-semibold text-gray-900">{user?.name || 'User'}</span></span>
 
-                            {/* Wait to render NotificationBell only if donor */}
-                            {user.role === 'Donor' && <NotificationBell user={user} />}
+                        {user?.role === 'Donor' && <NotificationBell user={user} />}
 
-                            <button
-                                onClick={handleLogout}
-                                className="btn-secondary"
-                            >
-                                Log out
-                            </button>
-                        </div>
-                    )}
+                        <button
+                            onClick={handleLogout}
+                            className="btn-secondary"
+                        >
+                            Log out
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
