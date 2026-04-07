@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Droplets, HeartPulse, ShieldCheck, UserPlus, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { API_URL } from '../config';
+import { getDefaultRouteForRole, normalizeAuthResponse, saveAuthSession } from '../utils/auth';
+import { apiPost } from '../services/apiClient';
+import InlineAlert from '../components/common/InlineAlert';
 
 const ROLES = [
     { label: 'Donor', value: 'Donor', description: 'Individual blood donor account' },
@@ -81,29 +83,28 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API_URL}/api/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    role,
-                    blood_type: role === 'Donor' ? blood_type : undefined,
-                    age: role === 'Donor' ? parseInt(age) : undefined,
-                    last_donation_date: role === 'Donor' ? last_donation_date : undefined
-                })
+            const data = await apiPost('/api/auth/register', {
+                name,
+                email,
+                password,
+                role,
+                blood_type: role === 'Donor' ? blood_type : undefined,
+                age: role === 'Donor' ? parseInt(age) : undefined,
+                last_donation_date: role === 'Donor' ? last_donation_date : undefined
             });
+            console.log('[auth] register API response', data);
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Registration failed');
+            const { token, user } = normalizeAuthResponse(data);
+            if (!token || !user) {
+                throw new Error('Invalid registration response format');
+            }
 
-            // Success! Save user / token
-            localStorage.setItem('user', JSON.stringify(data));
-            localStorage.setItem('token', data.token);
+            saveAuthSession(token, user);
+            const redirectPath = getDefaultRouteForRole(user.role);
+            console.log('[auth] register success', { userId: user.id, role: user.role, redirectPath });
 
             toast.success("Account created successfully!");
-            navigate('/dashboard', { replace: true });
+            navigate(redirectPath, { replace: true });
         } catch (err) {
             setError(err.message);
         } finally {
@@ -151,11 +152,7 @@ const Register = () => {
                             <p className="mt-3 text-sm text-slate-600 font-medium">Get started in a few simple steps</p>
                         </div>
 
-                        {error && (
-                            <div className="mt-6 bg-red-50/90 text-red-700 px-4 py-3 rounded-lg border border-red-200 text-sm font-medium flex items-center gap-2">
-                                {error}
-                            </div>
-                        )}
+                        <InlineAlert type="error" message={error} className="mt-6" />
 
                         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                             <div className="bg-slate-50/70 p-3 border border-slate-200 rounded-xl">

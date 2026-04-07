@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import NotificationBell from './NotificationBell';
+import { clearAuthSession, getDefaultRouteForRole, getStoredAuthSession } from '../utils/auth';
 
 function Navbar() {
     const [user, setUser] = useState(null);
@@ -8,22 +9,12 @@ function Navbar() {
     const location = useLocation();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (e) {
-                console.error("Failed parsing user", e);
-                setUser(null);
-            }
-        } else {
-            setUser(null);
-        }
+        const { user: storedUser } = getStoredAuthSession();
+        setUser(storedUser || null);
     }, [location.pathname]);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        clearAuthSession();
         setUser(null);
         navigate('/login', { replace: true });
     };
@@ -47,11 +38,15 @@ function Navbar() {
 
                     {/* Role-based Links */}
                     {user?.role === 'Admin' && (
-                        <Link to="/admin" className="text-purple-600/80 hover:text-purple-700 transition-colors">Admin Dashboard</Link>
+                        <Link to="/admin-dashboard" className="text-purple-600/80 hover:text-purple-700 transition-colors">Admin Dashboard</Link>
                     )}
 
                     {user?.role === 'Donor' && (
-                        <Link to="/dashboard" className="text-amber-600 hover:text-amber-700 transition-colors">My Dashboard</Link>
+                        <Link to="/donor-dashboard" className="text-amber-600 hover:text-amber-700 transition-colors">My Dashboard</Link>
+                    )}
+
+                    {(user?.role === 'Hospital Staff' || user?.role === 'Blood Bank Staff' || user?.role === 'Hospital') && (
+                        <Link to={getDefaultRouteForRole(user.role)} className="text-gray-600 hover:text-primary transition-colors">Dashboard</Link>
                     )}
 
                     {(!user || user?.role === 'Hospital Staff' || user?.role === 'Blood Bank Staff') && (

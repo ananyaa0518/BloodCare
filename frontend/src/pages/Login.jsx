@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Activity, Droplets, HeartPulse, ShieldCheck } from 'lucide-react';
-import { API_URL } from '../config';
+import { getDefaultRouteForRole, normalizeAuthResponse, saveAuthSession } from '../utils/auth';
+import { apiPost } from '../services/apiClient';
+import InlineAlert from '../components/common/InlineAlert';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -40,23 +42,21 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+            const data = await apiPost('/api/auth/login', formData);
+            console.log('[auth] login API response', data);
 
-            const data = await response.json();
+            const { token, user } = normalizeAuthResponse(data);
 
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data));
-                navigate('/dashboard', { replace: true });
-            } else {
-                setError(data.message || 'Login failed');
+            if (!token || !user) {
+                throw new Error('Invalid login response format');
             }
+
+            saveAuthSession(token, user);
+            const redirectPath = getDefaultRouteForRole(user.role);
+            console.log('[auth] login success', { userId: user.id, role: user.role, redirectPath });
+            navigate(redirectPath, { replace: true });
         } catch (err) {
-            setError('An error occurred. Please try again later.');
+            setError(err.message || 'An error occurred. Please try again later.');
         } finally {
             setLoading(false);
         }
@@ -102,14 +102,7 @@ const Login = () => {
                             <p className="mt-2 text-sm text-slate-600 font-medium">Sign in to continue to your dashboard</p>
                         </div>
 
-                        {error && (
-                            <div className="mt-6 bg-red-50/90 text-red-700 px-4 py-3 rounded-lg border border-red-200 text-sm font-medium flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                </svg>
-                                {error}
-                            </div>
-                        )}
+                        <InlineAlert type="error" message={error} className="mt-6" />
 
                         <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                             <div className="space-y-4">

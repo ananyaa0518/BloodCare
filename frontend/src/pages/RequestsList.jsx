@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { API_URL } from '../config';
+import { apiGet, apiPut } from '../services/apiClient';
+import { getStoredAuthSession } from '../utils/auth';
 
 function RequestsList() {
     const [requests, setRequests] = useState([]);
@@ -10,14 +11,9 @@ function RequestsList() {
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            try {
-                const parsedUser = JSON.parse(storedUser);
-                setUserRole(parsedUser.role);
-            } catch (e) {
-                console.error("Could not parse user from localStorage");
-            }
+        const { user } = getStoredAuthSession();
+        if (user) {
+            setUserRole(user.role);
         }
         fetchRequests();
     }, []);
@@ -25,10 +21,7 @@ function RequestsList() {
     const fetchRequests = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/requests`);
-            const data = await response.json();
-
-            if (!response.ok) throw new Error(data.message || 'Failed to fetch requests');
+            const data = await apiGet('/api/requests');
 
             setRequests(data);
             setError(null);
@@ -42,26 +35,14 @@ function RequestsList() {
     const handleFulfillStatus = async (id, currentStatus) => {
         if (currentStatus === 'Fulfilled') return; // Do nothing if already fulfilled.
 
-        const token = localStorage.getItem('token');
+        const { token } = getStoredAuthSession();
         if (!token) {
             alert('You must be logged in as Hospital Staff to do this.');
             return;
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/requests/${id}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ status: 'Fulfilled' })
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Failed to update status');
-            }
+            await apiPut(`/api/requests/${id}/status`, { status: 'Fulfilled' }, { withAuth: true });
 
             // Successfully updated
             fetchRequests();
@@ -78,9 +59,9 @@ function RequestsList() {
     };
 
     const badgeUrgencyColors = {
-        'Critical': 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/30',
-        'High': 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30',
-        'Normal': 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md shadow-blue-500/30'
+        'Critical': 'bg-linear-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/30',
+        'High': 'bg-linear-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30',
+        'Normal': 'bg-linear-to-r from-blue-500 to-cyan-500 text-white shadow-md shadow-blue-500/30'
     };
 
     if (loading) return <LoadingSpinner message="Loading emergency requests..." size="lg" />;

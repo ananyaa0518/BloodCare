@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { API_URL } from '../config';
+import { apiGet, apiPut } from '../services/apiClient';
 
 function UserManagement() {
     const [users, setUsers] = useState([]);
@@ -12,13 +12,8 @@ function UserManagement() {
     }, []);
 
     const fetchUsers = async () => {
-        const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_URL}/api/admin/users`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            const data = await apiGet('/api/admin/users', { withAuth: true });
             setUsers(data);
         } catch (err) {
             toast.error(err.message);
@@ -31,19 +26,8 @@ function UserManagement() {
         const confirmToggle = window.confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this user?`);
         if (!confirmToggle) return;
 
-        const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_URL}/api/admin/users/${userId}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ is_active: !currentStatus })
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            const data = await apiPut(`/api/admin/users/${userId}/status`, { is_active: !currentStatus }, { withAuth: true });
 
             toast.success(`User ${data.is_active ? 'activated' : 'deactivated'} successfully`);
 

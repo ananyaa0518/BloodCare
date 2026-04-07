@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/db.js';
+import { sendControllerError } from '../utils/controllerUtils.js';
 
 // Generate JWT
 const generateToken = (id) => {
@@ -15,6 +16,7 @@ const generateToken = (id) => {
 export const registerUser = async (req, res) => {
     try {
         const { name, email, password, role, blood_type, age, phone, city, last_donation_date } = req.body;
+        console.log('[registerUser] body:', { name, email, role, blood_type, age, phone, city, last_donation_date });
 
         if (!name || !email || !password || !role) {
             return res.status(400).json({ message: 'Please add all required fields' });
@@ -34,23 +36,42 @@ export const registerUser = async (req, res) => {
         const newUser = await pool.query(
             `INSERT INTO users (name, email, password, role, blood_type, age, phone, city, last_donation_date) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, name, email, role, blood_type, age, phone, city, last_donation_date, created_at`,
-            [name, email, hashedPassword, role, blood_type, age, phone, city, last_donation_date]
+            [
+                name, 
+                email, 
+                hashedPassword, 
+                role, 
+                blood_type !== undefined ? blood_type : null, 
+                age !== undefined ? age : null, 
+                phone !== undefined ? phone : null, 
+                city !== undefined ? city : null, 
+                last_donation_date !== undefined ? last_donation_date : null
+            ]
         );
 
         if (newUser.rows[0]) {
+            const createdUser = newUser.rows[0];
+            console.log('[registerUser] created user id:', createdUser.id);
             res.status(201).json({
-                id: newUser.rows[0].id,
-                name: newUser.rows[0].name,
-                email: newUser.rows[0].email,
-                role: newUser.rows[0].role,
-                token: generateToken(newUser.rows[0].id),
+                token: generateToken(createdUser.id),
+                user: {
+                    id: createdUser.id,
+                    name: createdUser.name,
+                    email: createdUser.email,
+                    role: createdUser.role,
+                    blood_type: createdUser.blood_type,
+                    age: createdUser.age,
+                    phone: createdUser.phone,
+                    city: createdUser.city,
+                    last_donation_date: createdUser.last_donation_date,
+                    created_at: createdUser.created_at,
+                },
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
-        console.error('Error in registerUser:', error);
-        res.status(500).json({ message: 'Server error' });
+        return sendControllerError(res, 'registerUser', error);
     }
 };
 
@@ -60,25 +81,33 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('[loginUser] body:', { email });
 
         // Check for user email
         const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
         const user = userResult.rows[0];
 
         if (user && (await bcrypt.compare(password, user.password))) {
+            console.log('[loginUser] authenticated user id:', user.id);
             res.json({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                blood_type: user.blood_type,
                 token: generateToken(user.id),
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    blood_type: user.blood_type,
+                    age: user.age,
+                    phone: user.phone,
+                    city: user.city,
+                    last_donation_date: user.last_donation_date,
+                    created_at: user.created_at,
+                },
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
-        console.error('Error in loginUser:', error);
-        res.status(500).json({ message: 'Server error' });
+        return sendControllerError(res, 'loginUser', error);
     }
 };

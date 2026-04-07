@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_URL } from '../config';
+import { apiGet, apiPost } from '../services/apiClient';
+import { clearAuthSession, getStoredAuthSession } from '../utils/auth';
 
 const DonorDashboard = () => {
     const [profile, setProfile] = useState(null);
@@ -18,8 +19,7 @@ const DonorDashboard = () => {
     });
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { token, user } = getStoredAuthSession();
 
     useEffect(() => {
         if (!token || !user) {
@@ -33,19 +33,11 @@ const DonorDashboard = () => {
         setLoading(true);
         try {
             // Fetch Profile
-            const profileRes = await fetch(`${API_URL}/api/donors/${user.id}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!profileRes.ok) throw new Error('Failed to fetch profile');
-            const profileData = await profileRes.json();
+            const profileData = await apiGet(`/api/donors/${user.id}`, { withAuth: true });
             setProfile(profileData);
 
             // Fetch History
-            const historyRes = await fetch(`${API_URL}/api/donors/${user.id}/history`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!historyRes.ok) throw new Error('Failed to fetch donation history');
-            const historyData = await historyRes.json();
+            const historyData = await apiGet(`/api/donors/${user.id}/history`, { withAuth: true });
             setHistory(historyData);
 
         } catch (err) {
@@ -58,18 +50,7 @@ const DonorDashboard = () => {
     const handleDonationSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${API_URL}/api/donors/${user.id}/history`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(donationData)
-            });
-
-            if (!res.ok) throw new Error('Failed to log donation');
-
-            const newRecord = await res.json();
+            const newRecord = await apiPost(`/api/donors/${user.id}/history`, donationData, { withAuth: true });
             setHistory([newRecord, ...history]);
             setShowDonationForm(false);
             setDonationData({ donation_date: '', location: '', units: 1, notes: '' });
@@ -90,7 +71,7 @@ const DonorDashboard = () => {
                 </h1>
                 <button
                     onClick={() => {
-                        localStorage.clear();
+                        clearAuthSession();
                         navigate('/login');
                         window.location.reload();
                     }}
@@ -118,7 +99,7 @@ const DonorDashboard = () => {
                         <div className="flex flex-col border-b border-slate-100 pb-3">
                             <span className="text-xs font-black uppercase tracking-wider text-slate-400 mb-1">Blood Type</span>
                             <div>
-                                <span className="bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-md shadow-red-500/20 px-3 py-1 rounded-lg font-black tracking-widest">{profile?.blood_type}</span>
+                                <span className="bg-linear-to-br from-red-500 to-rose-600 text-white shadow-md shadow-red-500/20 px-3 py-1 rounded-lg font-black tracking-widest">{profile?.blood_type}</span>
                             </div>
                         </div>
                         <div className="flex flex-col border-b border-slate-100 pb-3">
@@ -155,7 +136,7 @@ const DonorDashboard = () => {
 
                         {/* Donation Form */}
                         {showDonationForm && (
-                            <form onSubmit={handleDonationSubmit} className="bg-gradient-to-br from-red-50 to-rose-50/30 p-6 rounded-2xl mb-8 border border-red-100 shadow-inner animate-in fade-in slide-in-from-top-4 duration-300">
+                            <form onSubmit={handleDonationSubmit} className="bg-linear-to-br from-red-50 to-rose-50/30 p-6 rounded-2xl mb-8 border border-red-100 shadow-inner animate-in fade-in slide-in-from-top-4 duration-300">
                                 <h3 className="text-sm font-black uppercase tracking-wider text-red-800 mb-5">Record New Donation</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
                                     <div>

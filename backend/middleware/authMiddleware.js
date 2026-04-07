@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/db.js';
+import { isDatabaseConnectionError } from '../utils/controllerUtils.js';
 
 export const protect = async (req, res, next) => {
     let token;
@@ -11,6 +12,7 @@ export const protect = async (req, res, next) => {
         try {
             // Get token from header
             token = req.headers.authorization.split(' ')[1];
+            console.log('[protect] token received for path:', req.path);
 
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
@@ -29,12 +31,15 @@ export const protect = async (req, res, next) => {
 
             next();
         } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            console.error('[protect]', error);
+            if (isDatabaseConnectionError(error)) {
+                return res.status(503).json({ message: 'Database unavailable', error: error.message });
+            }
+            return res.status(401).json({ message: 'Not authorized, token failed', error: error.message });
         }
     }
 
     if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+        return res.status(401).json({ message: 'Not authorized, no token' });
     }
 };

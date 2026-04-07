@@ -1,13 +1,15 @@
 import { pool } from '../config/db.js';
+import { sendControllerError } from '../utils/controllerUtils.js';
 
 // Get all inventory details
 export const getAllInventory = async (req, res) => {
     try {
+        console.log('[getAllInventory] request received');
         const result = await pool.query('SELECT * FROM inventory ORDER BY collection_date DESC');
+        console.log('[getAllInventory] returned rows:', result.rowCount);
         res.status(200).json(result.rows);
     } catch (err) {
-        console.error('Error fetching inventory:', err);
-        res.status(500).json({ message: 'Server error fetching inventory' });
+        return sendControllerError(res, 'getAllInventory', err);
     }
 };
 
@@ -15,9 +17,14 @@ export const getAllInventory = async (req, res) => {
 export const addStock = async (req, res) => {
     try {
         const { blood_group, units, collection_date } = req.body;
+        console.log('[addStock] body:', { blood_group, units, collection_date });
 
         if (!blood_group || !units || !collection_date) {
             return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        if (Number(units) <= 0) {
+            return res.status(400).json({ message: 'units must be greater than 0' });
         }
 
         // Calculate expiry date: 42 days from collection date
@@ -31,10 +38,10 @@ export const addStock = async (req, res) => {
             [blood_group, units, collection_date, expiryDateObj.toISOString().split('T')[0]]
         );
 
+        console.log('[addStock] inserted id:', result.rows[0]?.id);
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error('Error adding stock:', err);
-        res.status(500).json({ message: 'Server error adding stock' });
+        return sendControllerError(res, 'addStock', err);
     }
 };
 
@@ -43,6 +50,11 @@ export const updateStock = async (req, res) => {
     try {
         const { id } = req.params;
         const { status, units } = req.body;
+        console.log('[updateStock] inputs:', { id, status, units });
+
+        if (units !== undefined && Number(units) <= 0) {
+            return res.status(400).json({ message: 'units must be greater than 0' });
+        }
 
         const result = await pool.query(
             `UPDATE inventory 
@@ -55,10 +67,10 @@ export const updateStock = async (req, res) => {
             return res.status(404).json({ message: 'Inventory record not found' });
         }
 
+        console.log('[updateStock] updated id:', result.rows[0]?.id);
         res.status(200).json(result.rows[0]);
     } catch (err) {
-        console.error('Error updating stock:', err);
-        res.status(500).json({ message: 'Server error updating stock' });
+        return sendControllerError(res, 'updateStock', err);
     }
 };
 
@@ -66,6 +78,7 @@ export const updateStock = async (req, res) => {
 export const deleteStock = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log('[deleteStock] id:', id);
 
         const result = await pool.query(
             'DELETE FROM inventory WHERE id = $1 RETURNING *',
@@ -78,7 +91,6 @@ export const deleteStock = async (req, res) => {
 
         res.status(200).json({ message: 'Stock deleted successfully' });
     } catch (err) {
-        console.error('Error deleting stock:', err);
-        res.status(500).json({ message: 'Server error deleting stock' });
+        return sendControllerError(res, 'deleteStock', err);
     }
 };

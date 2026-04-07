@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import { sendControllerError } from '../utils/controllerUtils.js';
 
 // @desc    Create a new emergency blood request
 // @route   POST /api/requests
@@ -6,9 +7,14 @@ import { pool } from '../config/db.js';
 export const createRequest = async (req, res) => {
     try {
         const { blood_type, units_required, urgency_level, hospital_name, contact } = req.body;
+        console.log('[createRequest] body:', { blood_type, units_required, urgency_level, hospital_name, contact, userId: req.user?.id });
 
         if (!blood_type || !units_required || !urgency_level || !hospital_name || !contact) {
             return res.status(400).json({ message: 'Please provide all required fields' });
+        }
+
+        if (Number(units_required) <= 0) {
+            return res.status(400).json({ message: 'units_required must be greater than 0' });
         }
 
         const validUrgencyLevels = ['Critical', 'High', 'Normal'];
@@ -27,6 +33,7 @@ export const createRequest = async (req, res) => {
         );
 
         const newRequest = result.rows[0];
+        console.log('[createRequest] created request id:', newRequest.id);
 
         // Emit socket event to active donors matching blood type
         try {
@@ -54,8 +61,7 @@ export const createRequest = async (req, res) => {
 
         res.status(201).json(newRequest);
     } catch (error) {
-        console.error('Error creating request:', error);
-        res.status(500).json({ message: 'Server error creating request' });
+        return sendControllerError(res, 'createRequest', error);
     }
 };
 
@@ -64,6 +70,7 @@ export const createRequest = async (req, res) => {
 // @access  Public or semi-public
 export const getRequests = async (req, res) => {
     try {
+        console.log('[getRequests] request received');
         // We order by urgency level and then by creation date. 
         // Postgres custom ordering can be done with CASE
         const result = await pool.query(
@@ -76,10 +83,10 @@ export const getRequests = async (req, res) => {
                 END,
                 created_at DESC`
         );
+        console.log('[getRequests] rows:', result.rowCount);
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching requests:', error);
-        res.status(500).json({ message: 'Server error fetching requests' });
+        return sendControllerError(res, 'getRequests', error);
     }
 };
 
@@ -90,6 +97,7 @@ export const updateRequestStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
+        console.log('[updateRequestStatus] inputs:', { id, status, actor: req.user?.id });
 
         if (!['Pending', 'Fulfilled'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
@@ -109,8 +117,7 @@ export const updateRequestStatus = async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (error) {
-        console.error('Error updating request status:', error);
-        res.status(500).json({ message: 'Server error updating status' });
+        return sendControllerError(res, 'updateRequestStatus', error);
     }
 };
 
@@ -121,6 +128,7 @@ export const respondToRequest = async (req, res) => {
     try {
         const { id } = req.params;
         const donorId = req.user.id; // user set from protect middleware
+        console.log('[respondToRequest] inputs:', { requestId: id, donorId, role: req.user?.role });
 
         // Optional: verify role if not done in route
         if (req.user.role !== 'Donor') {
@@ -152,7 +160,6 @@ export const respondToRequest = async (req, res) => {
         res.status(201).json({ message: 'Response recorded successfully', response: responseResult.rows[0] });
 
     } catch (error) {
-        console.error('Error responding to request:', error);
-        res.status(500).json({ message: 'Server error handling response' });
+        return sendControllerError(res, 'respondToRequest', error);
     }
 };
