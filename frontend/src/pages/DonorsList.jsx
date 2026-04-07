@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_URL } from '../config';
+import { apiGet } from '../services/apiClient';
 
 const DonorsList = () => {
     const [donors, setDonors] = useState([]);
@@ -19,13 +19,8 @@ const DonorsList = () => {
             if (filters.blood_type) params.append('blood_type', filters.blood_type);
             if (filters.city) params.append('city', filters.city);
 
-            const response = await fetch(`${API_URL}/api/donors?${params.toString()}`);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch donors');
-            }
-
-            const data = await response.json();
+            const query = params.toString();
+            const data = await apiGet(`/api/donors${query ? `?${query}` : ''}`);
             setDonors(data);
         } catch (err) {
             setError(err.message);
@@ -114,7 +109,7 @@ const DonorsList = () => {
                         <div key={donor.id} className="glass p-8 rounded-3xl border border-white hover:border-red-200 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
                             <div className="flex justify-between items-start mb-6 border-b border-slate-100 pb-4">
                                 <h3 className="text-2xl font-black text-slate-800 tracking-tight">{donor.name}</h3>
-                                <span className="bg-gradient-to-br from-red-500 to-rose-600 shadow-md shadow-red-500/20 text-white text-lg font-black px-4 py-1.5 rounded-xl tracking-widest">
+                                <span className="bg-linear-to-br from-red-500 to-rose-600 shadow-md shadow-red-500/20 text-white text-lg font-black px-4 py-1.5 rounded-xl tracking-widest">
                                     {donor.blood_type}
                                 </span>
                             </div>

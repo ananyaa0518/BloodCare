@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { API_URL } from '../config';
+import { apiGet } from '../services/apiClient';
 
 function AdminDashboard() {
     const [stats, setStats] = useState(null);
@@ -11,24 +11,12 @@ function AdminDashboard() {
 
     useEffect(() => {
         const fetchStats = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
             try {
-                const res = await fetch(`${API_URL}/api/admin/stats`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!res.ok) {
-                    throw new Error("Failed to load dashboard data");
-                }
-                const data = await res.json();
+                const data = await apiGet('/api/admin/stats', { withAuth: true });
                 setStats(data);
             } catch (err) {
                 toast.error(err.message);
+                navigate('/login');
             } finally {
                 setLoading(false);
             }
@@ -79,7 +67,7 @@ function AdminDashboard() {
                     <h3 className="text-slate-400 font-black tracking-widest text-xs uppercase mb-3 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span> Active Emergencies
                     </h3>
-                    <p className="text-5xl font-black text-slate-800 tracking-tighter text-red-600">{stats.activeRequests}</p>
+                    <p className="text-5xl font-black tracking-tighter text-red-600">{stats.activeRequests}</p>
                 </div>
             </div>
 

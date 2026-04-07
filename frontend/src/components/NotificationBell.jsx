@@ -3,19 +3,18 @@ import { Bell } from 'lucide-react';
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { API_URL } from '../config';
+import { apiPost } from '../services/apiClient';
 
 function NotificationBell({ user }) {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
-    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         if (!user || user.role !== 'Donor') return;
 
         // Initialize Socket
         const newSocket = io(API_URL);
-        setSocket(newSocket);
 
         newSocket.on('connect', () => {
             console.log('Connected to socket server');
@@ -44,17 +43,8 @@ function NotificationBell({ user }) {
     };
 
     const handleRespond = async (requestId) => {
-        const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_URL}/api/requests/${requestId}/respond`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            await apiPost(`/api/requests/${requestId}/respond`, undefined, { withAuth: true });
 
             toast.success("Successfully registered your response!");
             // Optionally remove from list or mark as responded

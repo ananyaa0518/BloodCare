@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import { sendControllerError } from '../utils/controllerUtils.js';
 
 // @desc    Get all donors or search by blood type / city
 // @route   GET /api/donors
@@ -6,6 +7,7 @@ import { pool } from '../config/db.js';
 export const getDonors = async (req, res) => {
     try {
         const { blood_type, city } = req.query;
+        console.log('[getDonors] query:', { blood_type, city });
 
         let query = 'SELECT id, name, email, role, blood_type, age, phone, city, last_donation_date, created_at FROM users WHERE role = $1';
         let params = ['Donor'];
@@ -26,11 +28,11 @@ export const getDonors = async (req, res) => {
         query += ' ORDER BY created_at DESC';
 
         const result = await pool.query(query, params);
+        console.log('[getDonors] rows:', result.rowCount);
 
         res.status(200).json(result.rows);
     } catch (error) {
-        console.error('Error fetching donors:', error);
-        res.status(500).json({ message: 'Server error fetching donors' });
+        return sendControllerError(res, 'getDonors', error);
     }
 };
 
@@ -40,6 +42,7 @@ export const getDonors = async (req, res) => {
 export const getDonorById = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log('[getDonorById] id:', id);
         const result = await pool.query(
             'SELECT id, name, email, role, blood_type, age, phone, city, last_donation_date, created_at FROM users WHERE id = $1 AND role = $2',
             [id, 'Donor']
@@ -51,8 +54,7 @@ export const getDonorById = async (req, res) => {
 
         res.status(200).json(result.rows[0]);
     } catch (error) {
-        console.error('Error fetching donor:', error);
-        res.status(500).json({ message: 'Server error fetching donor' });
+        return sendControllerError(res, 'getDonorById', error);
     }
 };
 
@@ -63,6 +65,7 @@ export const updateDonor = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, blood_type, age, phone, city, last_donation_date } = req.body;
+        console.log('[updateDonor] inputs:', { id, name, blood_type, age, phone, city, last_donation_date });
 
         // Optionally, check if the donor exists first
         const checkResult = await pool.query('SELECT * FROM users WHERE id = $1 AND role = $2', [id, 'Donor']);
@@ -85,8 +88,7 @@ export const updateDonor = async (req, res) => {
 
         res.status(200).json(result.rows[0]);
     } catch (error) {
-        console.error('Error updating donor:', error);
-        res.status(500).json({ message: 'Server error updating donor' });
+        return sendControllerError(res, 'updateDonor', error);
     }
 };
 
@@ -96,6 +98,7 @@ export const updateDonor = async (req, res) => {
 export const deleteDonor = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log('[deleteDonor] id:', id);
 
         const result = await pool.query('DELETE FROM users WHERE id = $1 AND role = $2 RETURNING id', [id, 'Donor']);
 
@@ -105,8 +108,7 @@ export const deleteDonor = async (req, res) => {
 
         res.status(200).json({ message: 'Donor deleted successfully' });
     } catch (error) {
-        console.error('Error deleting donor:', error);
-        res.status(500).json({ message: 'Server error deleting donor' });
+        return sendControllerError(res, 'deleteDonor', error);
     }
 };
 
@@ -116,6 +118,7 @@ export const deleteDonor = async (req, res) => {
 export const getDonationHistory = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log('[getDonationHistory] donor id:', id);
 
         const result = await pool.query(
             'SELECT * FROM donation_history WHERE donor_id = $1 ORDER BY donation_date DESC',
@@ -124,8 +127,7 @@ export const getDonationHistory = async (req, res) => {
 
         res.status(200).json(result.rows);
     } catch (error) {
-        console.error('Error fetching donation history:', error);
-        res.status(500).json({ message: 'Server error fetching donation history' });
+        return sendControllerError(res, 'getDonationHistory', error);
     }
 };
 
@@ -136,9 +138,14 @@ export const addDonationRecord = async (req, res) => {
     try {
         const { id } = req.params;
         const { donation_date, location, units, status, notes } = req.body;
+        console.log('[addDonationRecord] inputs:', { id, donation_date, location, units, status });
 
         if (!donation_date || !units) {
             return res.status(400).json({ message: 'Date and units are required fields' });
+        }
+
+        if (Number(units) <= 0) {
+            return res.status(400).json({ message: 'units must be greater than 0' });
         }
 
         const result = await pool.query(
@@ -152,7 +159,6 @@ export const addDonationRecord = async (req, res) => {
 
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Error adding donation record:', error);
-        res.status(500).json({ message: 'Server error adding donation record' });
+        return sendControllerError(res, 'addDonationRecord', error);
     }
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { API_URL } from '../config';
+import InlineAlert from './common/InlineAlert';
+import { apiPost } from '../services/apiClient';
 
 const AddStockModal = ({ isOpen, onClose, onAdd }) => {
     const [formData, setFormData] = useState({
@@ -22,22 +23,11 @@ const AddStockModal = ({ isOpen, onClose, onAdd }) => {
         setError('');
 
         try {
-            const response = await fetch(`${API_URL}/api/inventory`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    blood_group: formData.blood_group,
-                    units: parseInt(formData.units),
-                    collection_date: formData.collection_date
-                }),
+            const newStock = await apiPost('/api/inventory', {
+                blood_group: formData.blood_group,
+                units: parseInt(formData.units),
+                collection_date: formData.collection_date
             });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Failed to add stock');
-            }
-
-            const newStock = await response.json();
             onAdd(newStock);
             onClose();
         } catch (err) {
@@ -60,11 +50,7 @@ const AddStockModal = ({ isOpen, onClose, onAdd }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4 text-left">
-                    {error && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
-                            {error}
-                        </div>
-                    )}
+                    <InlineAlert type="error" message={error} />
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Blood Group</label>

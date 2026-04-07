@@ -1,7 +1,9 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 import dotenv from 'dotenv';
+import dns from 'dns';
 
+dns.setDefaultResultOrder('ipv4first');
 dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;

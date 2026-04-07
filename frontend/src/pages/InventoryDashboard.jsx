@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, AlertTriangle, Activity, Droplet } from 'lucide-react';
 import AddStockModal from '../components/AddStockModal';
-import { API_URL } from '../config';
+import { apiDelete, apiGet } from '../services/apiClient';
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 const CRITICAL_THRESHOLD = 5;
@@ -19,9 +19,7 @@ const InventoryDashboard = () => {
 
     const fetchInventory = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/inventory`);
-            if (!res.ok) throw new Error('Failed to fetch inventory');
-            const data = await res.json();
+            const data = await apiGet('/api/inventory');
             setInventory(data);
         } catch (err) {
             setError(err.message);
@@ -36,8 +34,7 @@ const InventoryDashboard = () => {
 
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`${API_URL}/api/inventory/${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Failed to delete stock');
+            await apiDelete(`/api/inventory/${id}`);
             setInventory(prev => prev.filter(item => item.id !== id));
         } catch (err) {
             alert(err.message);
@@ -127,7 +124,7 @@ const InventoryDashboard = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {aggregatedData.map(data => (
                     <div key={data.type} className="glass p-6 rounded-3xl border border-white hover:border-red-200 transition-all duration-300 flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-2xl hover:-translate-y-1 cursor-pointer">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-white/40 rounded-full blur-xl translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-white/5 to-white/40 rounded-full blur-xl translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
                         <div className="text-6xl font-black text-slate-800 mb-3 group-hover:scale-110 group-hover:text-red-600 transition-all duration-300 drop-shadow-sm">
                             {data.type}
                         </div>
@@ -142,7 +139,7 @@ const InventoryDashboard = () => {
             {/* Expiring / Critical Units Section */}
             {expiringItems.length > 0 && (
                 <div className="content-card p-0 overflow-hidden">
-                    <div className="bg-gradient-to-r from-red-50 to-red-100/50 px-8 py-5 flex items-center gap-3 border-b border-red-100">
+                    <div className="bg-linear-to-r from-red-50 to-red-100/50 px-8 py-5 flex items-center gap-3 border-b border-red-100">
                         <div className="p-2 bg-red-200/50 rounded-xl">
                             <AlertTriangle className="text-red-600" size={24} />
                         </div>
