@@ -59,9 +59,9 @@ function RequestsList() {
     };
 
     const badgeUrgencyColors = {
-        'Critical': 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/30',
-        'High': 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30',
-        'Normal': 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md shadow-blue-500/30'
+        'Critical': 'bg-linear-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/30',
+        'High': 'bg-linear-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30',
+        'Normal': 'bg-linear-to-r from-blue-500 to-cyan-500 text-white shadow-md shadow-blue-500/30'
     };
 
     if (loading) return <LoadingSpinner message="Loading emergency requests..." size="lg" />;

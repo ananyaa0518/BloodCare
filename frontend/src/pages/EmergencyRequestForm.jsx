@@ -75,7 +75,7 @@ function EmergencyRequestForm() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
                         </span>
-                        <h2 className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-rose-500 tracking-tight">Raise Emergency Request</h2>
+                        <h2 className="text-4xl font-black bg-clip-text text-transparent bg-linear-to-r from-red-700 to-rose-500 tracking-tight">Raise Emergency Request</h2>
                         <p className="mt-2 text-slate-600 font-medium">Broadcast an urgent requirement to donors and staff immediately.</p>
                     </div>
 
@@ -167,7 +167,7 @@ function EmergencyRequestForm() {
                         <div className="pt-2">
                             <button
                                 type="submit"
-                                className="w-full btn-primary h-14 text-lg font-black uppercase tracking-wider rounded-xl shadow-lg shadow-red-500/40 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500"
+                                className="w-full btn-primary h-14 text-lg font-black uppercase tracking-wider rounded-xl shadow-lg shadow-red-500/40 bg-linear-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500"
                             >
                                 Submit Emergency Request
                             </button>
